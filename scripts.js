@@ -1,14 +1,123 @@
-let slideIndex = 0;
-showSlides();
-
-function showSlides() {
-    let i;
-    const slides = document.getElementsByClassName("slides");
-    for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
+// 이미지 슬라이드를 위한 코드
+document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelectorAll('.slideshow img');
+    let currentSlideIndex = 0;
+  
+    // 이미지 슬라이드 함수
+    function showNextSlide() {
+      slides.forEach(slide => {
+        slide.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+        slide.classList.remove('active');
+      });
+      slides[currentSlideIndex].classList.add('active');
+      currentSlideIndex = (currentSlideIndex + 1) % slides.length;
     }
-    slideIndex++;
-    if (slideIndex > slides.length) { slideIndex = 1 }
-    slides[slideIndex - 1].style.display = "block";
-    setTimeout(showSlides, 2000); // 이미지가 2초마다 자동으로 변경됨
-}
+  
+    // 1초마다 이미지 슬라이드를 변경
+    setInterval(showNextSlide, 3000);
+  });
+
+  // 이미지 슬라이드를 위한 코드
+document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelectorAll('.slideshow img');
+    let currentSlideIndex = 0;
+  
+    // 이미지 슬라이드 함수
+    function showNextSlide() {
+      slides.forEach(slide => {
+        slide.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+        slide.classList.remove('active');
+      });
+      slides[currentSlideIndex].classList.add('active');
+      currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+    }
+  
+    // 1초마다 이미지 슬라이드를 변경
+    setInterval(showNextSlide, 3000);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const submitBtn = document.getElementById('submit-btn');
+    const postContainer = document.getElementById('post-container');
+  
+    submitBtn.addEventListener('click', () => {
+      const postTitle = document.getElementById('post-title').value;
+      const postContent = document.getElementById('post-content').value;
+  
+      if (postTitle.trim() === '' || postContent.trim() === '') {
+        alert('제목과 내용을 모두 입력해주세요.');
+        return;
+      }
+  
+      const postElement = createPostElement(postTitle, postContent);
+      postContainer.appendChild(postElement);
+  
+      // 입력 폼 비우기
+      document.getElementById('post-title').value = '';
+      document.getElementById('post-content').value = '';
+    });
+  
+    function createPostElement(title, content) {
+      const postElement = document.createElement('div');
+      postElement.classList.add('post');
+  
+      const titleElement = document.createElement('h2');
+      titleElement.textContent = title;
+  
+      const contentElement = document.createElement('p');
+      contentElement.textContent = content;
+  
+      postElement.appendChild(titleElement);
+      postElement.appendChild(contentElement);
+  
+      return postElement;
+    }
+  });
+
+  
+// 해당 일정을 alert로 보여주는 함수
+function showAlert(schedule) {
+    alert(schedule);
+  }
+
+  $(document).ready(function () {
+    $('#loading').hide();
+  });
+
+  function chatGPT() {
+    const api_key = "sk-LpwtgBuJ46vdLtNHQxyCT3Bl"  // <- API KEY 입력
+    const keywords = document.getElementById('keywords').value
+    $('#loading').show();
+
+    const messages = [
+      { role: 'system', content: 'You are a helpful assistant.' },
+      { role: 'user', content: keywords + '에 대하여 최대한 도움이 되는 답변을 해줘.' },
+    ]
+
+    const data = {
+      model: 'gpt-3.5-turbo',
+      temperature: 0.5,
+      n: 1,
+      messages: messages,
+    }
+
+    $.ajax({
+      url: "https://api.openai.com/v1/chat/completions",
+      method: 'POST',
+      headers: {
+        Authorization: "Bearer " +api_key+"bkFJVGC5YKqxjkjZ2jgvgkxp",
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(data),
+    }).then(function (response) {
+      $('#loading').hide();
+      console.log(response)
+      let result = document.getElementById('result')
+      let pre = document.createElement('pre')
+
+      pre.innerHTML = "\n\n" + response.choices[0].message.content
+      result.appendChild(pre)
+
+      document.getElementById('keywords').value = ''
+    });
+  }
